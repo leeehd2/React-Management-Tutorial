@@ -12,49 +12,36 @@ import TableCell  from '@material-ui/core/TableCell';
 import { withStyles } from '@material-ui/core/styles';
 
 
+
 const styles = theme =>({
   root : {
     width : '100%',
-    marginTop : theme.spacing.unit *3,
+    marginTop : theme.spacing(3),
     overflowX : "auto"
   },
   table : { minWidth : 1080}
 })
 
-const customers = [{
-  'id' : 1,
-  'image' : `https://picsum.photos/id/1/200/150` ,
-  'name' : '홍길동1',
-  'birthday' : '961214',
-  'gender' : '남자' ,
-  'job' : '대학생'
-},
-{
-  'id' : 2,
-  'image' : `https://picsum.photos/id/2/200/150` ,
-  'name' : '홍길동2',
-  'birthday' : '961214',
-  'gender' : '남자' ,
-  'job' : '대학생'
-},
-{
-  'id' : 3,
-  'image' : `https://picsum.photos/id/3/200/150` ,
-  'name' : '홍길동3',
-  'birthday' : '961214',
-  'gender' : '남자' ,
-  'job' : '대학생'
-},
-{
-  'id' : 4,
-  'image' : `https://picsum.photos/id/4/200/150` ,
-  'name' : '홍길동4',
-  'birthday' : '961214',
-  'gender' : '남자' ,
-  'job' : '대학생'
-}]
+
 
 class  App  extends Component {
+
+  state ={
+    customers : ""
+  }
+
+  componentDidMount(){
+    this.callApi()
+    .then(res => this.setState({customers: res}))
+    .catch(err => console.log(err));
+  }
+
+  callApi = async () => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    console.log(body)
+    return body;
+  }
 
   render(){
     const{classes} = this.props;
@@ -73,11 +60,11 @@ class  App  extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-          {customers.map( c =>{
+          {this.state.customers ? this.state.customers.map( c =>{
               return(
                 <Customer key={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} gender={c.gender} job={c.job}/>
               )
-            })
+            }) : ""
           }
           </TableBody>
         </Table>       
